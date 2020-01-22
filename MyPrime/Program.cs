@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LibPrime;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -6,9 +7,6 @@ using System.Linq;
 using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
-using DataModel;
-using LibPrime;
-using LinqToDB;
 
 // http://www.hanselman.com/blog/BackToParallelBasicsDoYouReallyWantToDoThatOrWhyDoesntTheNewParallelForSupportBigInteger.aspx
 namespace MyPrime
@@ -18,20 +16,19 @@ namespace MyPrime
         static void Main(string[] args)
         {
             BigInteger maxFound;
-            Int64 foundCount = 0;
-            using (var pdb = new PrimeDB())
+            long foundCount = 0;
+            var all = PrimeRepo.GetAll().ToList();
+
+            if (!all.Any())
             {
-                if (!pdb.Primes.Any())
-                {
-                    maxFound = 2;
-                }
-                else
-                {
-                    var maxId = pdb.Primes.Max(p => p.Id);
-                    var v = pdb.Primes.Single(p => p.Id == maxId);
-                    maxFound = BigInteger.Parse(v.PrimeNumber) + 1;
-                    foundCount = v.Id;
-                }
+                maxFound = 2;
+            }
+            else
+            {
+                var maxId = all.Max(p => p.Id);
+                var v = all.Single(p => p.Id == maxId);
+                maxFound = BigInteger.Parse(v.PrimeNumber) + 1;
+                foundCount = v.Seq;
             }
 
             var max = BigInteger.Parse(new string('9', 9999));
@@ -55,42 +52,36 @@ namespace MyPrime
 
                 sortedList.AddRange(a);
                 sortedList.Sort();
-                Prime p;
-                using (var pdb = new PrimeDB())
+
+                foreach (var bigInteger in sortedList)
                 {
-                    pdb.BeginTransaction();
-                    foreach (var bigInteger in sortedList)
+                    var p = new Prime
                     {
-                        p = new Prime
-                        {
-                            Id = ++foundCount,
-                            PrimeNumber = bigInteger.ToString()
-                        };
+                        Id = ++foundCount,
+                        Seq = foundCount,
+                        PrimeNumber = bigInteger.ToString()
+                    };
 
-                        if (p.Id % 10000 == 0)
-                        {
-                            pdb.Insert(p);
-                        }
-
-                        if (bigInteger - last > gap)
-                        {
-                            sw.Stop();
-                            Console.WriteLine("{0} -第{1}个- -{2}位- [{3}]", sw.Elapsed, p.Id, p.PrimeNumber.Length,
-                                p.PrimeNumber);
-                            sw.Reset();
-                            sw.Start();
-                            last = bigInteger;
-                        }
+                    if (p.Seq % 10000 == 0)
+                    {
+                        PrimeRepo.Insert(p);
                     }
 
-                    pdb.CommitTransaction();
+                    if (bigInteger - last > gap)
+                    {
+                        sw.Stop();
+                        Console.WriteLine("{0} -第{1}个- -{2}位- [{3}]", sw.Elapsed, p.Id, p.PrimeNumber.Length,
+                            p.PrimeNumber);
+                        sw.Reset();
+                        sw.Start();
+                        last = bigInteger;
+                    }
                 }
 
                 sortedList.Clear();
                 while (!a.IsEmpty)
                 {
-                    BigInteger someItem;
-                    a.TryTake(out someItem);
+                    a.TryTake(out _);
                 }
 
                 Thread.Sleep(500);
