@@ -13,7 +13,7 @@ namespace LibPrime
 
         public BigInteger PollardRho(BigInteger number)
         {
-            BigInteger a = 2, b = 2, tmp;//initail starting values
+            BigInteger a = 2, b = 2, tmp;// initial starting values
             while (true)
             {
                 a = CustomFunct(a, number);//get first number

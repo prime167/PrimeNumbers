@@ -28,44 +28,44 @@ namespace LibPrime
             // https://miller-rabin.appspot.com/
             // if n < 2^64, it is enough to test a = 2, 325, 9375, 28178, 450775, 9780504, and 1795265022
 
-            var toTest = new List<Int64>();
+            var toTest = new List<long>();
             var useBigRandom = false;
             int loopCount;
             if (source < 1373653)
             {
-                toTest = new List<Int64> { 2, 3 };
+                toTest = new List<long> { 2, 3 };
             }
             else if (source < 9080191)
             {
-                toTest = new List<Int64> { 31, 73 };
+                toTest = new List<long> { 31, 73 };
             }
             else if (source < 4759123141)
             {
-                toTest = new List<Int64> { 2, 7, 61 };
+                toTest = new List<long> { 2, 7, 61 };
             }
             else if (source < 1122004669633)
             {
-                toTest = new List<Int64> { 2, 3, 23, 1662803 };
+                toTest = new List<long> { 2, 3, 23, 1662803 };
             }
             else if (source < 2152302898747)
             {
-                toTest = new List<Int64> { 2, 3, 5, 7, 11 };
+                toTest = new List<long> { 2, 3, 5, 7, 11 };
             }
             else if (source < 3474749660383)
             {
-                toTest = new List<Int64> { 2, 3, 5, 7, 11, 13 };
+                toTest = new List<long> { 2, 3, 5, 7, 11, 13 };
             }
             else if (source < 341550071728321)
             {
-                toTest = new List<Int64> { 2, 3, 5, 7, 11, 13, 17 };
+                toTest = new List<long> { 2, 3, 5, 7, 11, 13, 17 };
             }
             else if (source < 585226005592931977)
             {
-                toTest = new List<Int64> { 2, 123635709730000, 9233062284813009, 43835965440333360, 761179012939631437, 1263739024124850375 };
+                toTest = new List<long> { 2, 123635709730000, 9233062284813009, 43835965440333360, 761179012939631437, 1263739024124850375 };
             }
             else if (source < 18446744073709551615) // 2^64 - 1
             {
-                toTest = new List<Int64> { 2, 325, 9375, 28178, 450775, 9780504, 1795265022};
+                toTest = new List<long> { 2, 325, 9375, 28178, 450775, 9780504, 1795265022};
             }
             else
             {
@@ -74,6 +74,7 @@ namespace LibPrime
 
             if (source == 2 || source == 3)
                 return true;
+
             if (source < 2 || source % 2 == 0)
                 return false;
 

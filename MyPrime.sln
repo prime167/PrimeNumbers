@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29209.152
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyPrime", "MyPrime\MyPrime.csproj", "{5BF35258-8012-4D3E-9E16-96B33077A2D6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibPrime", "LibPrime\LibPrime.csproj", "{714588B1-8678-4EC6-8352-4BAED02E7585}"
