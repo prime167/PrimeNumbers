@@ -55,9 +55,9 @@ namespace PrimeTest
             do
             {
                 a = p.PollardRho(b);
-                b = b/a;MessageBox.Show(a.ToString());
-
-            } while (a >1 );            
+                b = b / a;
+                MessageBox.Show(a.ToString());
+            } while (a > 1);
         }
 
         private void btnStart_Click(object sender, EventArgs e)
@@ -88,7 +88,7 @@ namespace PrimeTest
 
             var sw = new Stopwatch();
             sw.Start();
-            for (var i = s; i < s*2; i += 2)
+            for (var i = s; i < s * 2; i += 2)
             {
                 if (i.IsProbablePrime())
                 {
@@ -114,7 +114,7 @@ namespace PrimeTest
             {
                 // Randomly set the bit
                 int randomInt = random.Next();
-                if ((randomInt%2) == 0)
+                if ((randomInt % 2) == 0)
                 {
                     // Reverse the bit
                     maxBits[i] = !maxBits[i];

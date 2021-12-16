@@ -9,7 +9,7 @@ namespace MyPrime
 {
     public static class PrimeRepo
     {
-        public static string DbFile => @"..\..\primes\Prime.db";
+        public static string DbFile => @"..\\..\\..\primes\Prime.db";
 
         public static SQLiteConnection Conn()
         {
