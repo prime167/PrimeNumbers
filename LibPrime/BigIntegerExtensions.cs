@@ -17,55 +17,55 @@ namespace LibPrime
         public static bool IsProbablePrime(this BigInteger source, int certainty = 20, bool alwaysUseRandom = false)
         {
             // https://en.wikipedia.org/wiki/Miller%E2%80%93Rabin_primality_test#Deterministic_variants_of_the_test
-            // if n < 1,373,653, it is enough to test a = 2 and 3;
-            // if n < 9,080,191, it is enough to test a = 31 and 73;
-            // if n < 4,759,123,141, it is enough to test a = 2, 7, and 61;
-            // if n < 1,122,004,669,633, it is enough to test a = 2, 13, 23, and 1662803;
-            // if n < 2,152,302,898,747, it is enough to test a = 2, 3, 5, 7, and 11;
-            // if n < 3,474,749,660,383, it is enough to test a = 2, 3, 5, 7, 11, and 13;
-            // if n < 341,550,071,728,321, it is enough to test a = 2, 3, 5, 7, 11, 13, and 17.
-
-            // https://miller-rabin.appspot.com/
-            // if n < 2^64, it is enough to test a = 2, 325, 9375, 28178, 450775, 9780504, and 1795265022
-
-            var toTest = new List<long>();
-            var useBigRandom = false;
+            // if n <                  1,373,653, it is enough to test a = 2 3;
+            // if n <                  9,080,191, it is enough to test a = 31 73;
+            // if n <              4,759,123,141, it is enough to test a = 2, 7, 61;
+            // if n <          1,122,004,669,633, it is enough to test a = 2, 13, 23, 1662803;
+            // if n <          2,152,302,898,747, it is enough to test a = 2, 3, 5, 7, 11;
+            // if n <          3,474,749,660,383, it is enough to test a = 2, 3, 5, 7, 11, 13;
+            // if n <        341,550,071,728,321, it is enough to test a = 2, 3, 5, 7, 11, 13, 17.
+            // if n <  3,825,123,056,546,413,051, it is enough to test a = 2, 3, 5, 7, 11, 13, 17, 19, 23
+            // if n < 18,446,744,073,709,551,615, it is enough to test a = 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37
+            //              (2^64-1)
+            var toTest = new List<ulong>();
+            bool useBigRandom = false;
             int loopCount;
+
             if (source < 1373653)
             {
-                toTest = new List<long> { 2, 3 };
+                toTest = new List<ulong> { 2, 3 };
             }
             else if (source < 9080191)
             {
-                toTest = new List<long> { 31, 73 };
+                toTest = new List<ulong> { 31, 73 };
             }
             else if (source < 4759123141)
             {
-                toTest = new List<long> { 2, 7, 61 };
+                toTest = new List<ulong> { 2, 7, 61 };
             }
             else if (source < 1122004669633)
             {
-                toTest = new List<long> { 2, 3, 23, 1662803 };
+                toTest = new List<ulong> { 2, 13, 23, 1662803 };
             }
             else if (source < 2152302898747)
             {
-                toTest = new List<long> { 2, 3, 5, 7, 11 };
+                toTest = new List<ulong> { 2, 3, 5, 7, 11 };
             }
             else if (source < 3474749660383)
             {
-                toTest = new List<long> { 2, 3, 5, 7, 11, 13 };
+                toTest = new List<ulong> { 2, 3, 5, 7, 11, 13 };
             }
             else if (source < 341550071728321)
             {
-                toTest = new List<long> { 2, 3, 5, 7, 11, 13, 17 };
+                toTest = new List<ulong> { 2, 3, 5, 7, 11, 13, 17 };
             }
-            else if (source < 585226005592931977)
+            else if (source < 3825123056546413051)
             {
-                toTest = new List<long> { 2, 123635709730000, 9233062284813009, 43835965440333360, 761179012939631437, 1263739024124850375 };
+                toTest = new List<ulong> { 2, 3, 5, 7, 11, 13, 17, 19, 23 };
             }
-            else if (source < 18446744073709551615) // 2^64 - 1
+            else if (source < 18446744073709551615) // ulong max= 2^64 - 1
             {
-                toTest = new List<long> { 2, 325, 9375, 28178, 450775, 9780504, 1795265022};
+                toTest = new List<ulong> { 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37 };
             }
             else
             {
