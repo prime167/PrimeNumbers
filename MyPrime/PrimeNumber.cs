@@ -1,15 +1,14 @@
 ﻿using Dapper.Contrib.Extensions;
 
-namespace MyPrime
+namespace MyPrime;
+
+[Table("Prime")]
+public class Prime
 {
-    [Table("Prime")]
-    public class Prime
-    {
-        [Key] 
-        public long Id { get; set; }
+    [Key] 
+    public long Id { get; set; }
 
-        public long Seq { get; set; }
+    public long Seq { get; set; }
 
-        public string PrimeNumber { get; set; }
-    }
+    public string PrimeNumber { get; set; }
 }

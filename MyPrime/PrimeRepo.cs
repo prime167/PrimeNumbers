@@ -5,67 +5,66 @@ using System.IO;
 using Dapper;
 using Dapper.Contrib.Extensions;
 
-namespace MyPrime
+namespace MyPrime;
+
+public static class PrimeRepo
 {
-    public static class PrimeRepo
+    public static string DbFile => @"..\\..\\..\primes\Prime.db";
+
+    public static SQLiteConnection Conn()
     {
-        public static string DbFile => @"..\\..\\..\primes\Prime.db";
+        return new SQLiteConnection($@"Data Source='{DbFile}'");
+    }
 
-        public static SQLiteConnection Conn()
+    public static IEnumerable<Prime> GetAll()
+    {
+        if (!File.Exists(DbFile))
         {
-            return new SQLiteConnection($@"Data Source='{DbFile}'");
+            CreateDatabase();
         }
 
-        public static IEnumerable<Prime> GetAll()
+        using (var cnn = Conn())
         {
-            if (!File.Exists(DbFile))
-            {
-                CreateDatabase();
-            }
+            cnn.Open();
+            return cnn.Query<Prime>("select * from prime");
+        }
+    }
 
-            using (var cnn = Conn())
-            {
-                cnn.Open();
-                return cnn.Query<Prime>("select * from prime");
-            }
+    public static long Insert(Prime prime)
+    {
+        if (!File.Exists(DbFile))
+        {
+            CreateDatabase();
         }
 
-        public static long Insert(Prime prime)
+        using (var cnn = Conn())
         {
-            if (!File.Exists(DbFile))
-            {
-                CreateDatabase();
-            }
+            cnn.Open();
+            return cnn.Insert<Prime>(prime);
+        }
+    }
 
-            using (var cnn = Conn())
-            {
-                cnn.Open();
-                return cnn.Insert<Prime>(prime);
-            }
+    public static long Insert(List<Prime> primes)
+    {
+        if (!File.Exists(DbFile))
+        {
+            CreateDatabase();
         }
 
-        public static long Insert(List<Prime> primes)
+        using (var cnn = Conn())
         {
-            if (!File.Exists(DbFile))
-            {
-                CreateDatabase();
-            }
-
-            using (var cnn = Conn())
-            {
-                cnn.Open();
-                return cnn.Insert(primes);
-            }
+            cnn.Open();
+            return cnn.Insert(primes);
         }
+    }
 
-        private static void CreateDatabase()
+    private static void CreateDatabase()
+    {
+        using (var cnn = Conn())
         {
-            using (var cnn = Conn())
-            {
-                cnn.Open();
-                cnn.Execute(
-                    @"CREATE TABLE Prime ([Id] integer PRIMARY KEY NOT NULL,[Seq] integer NOT NULL,[PrimeNumber] nvarchar(1000) NOT NULL);");
-            }
+            cnn.Open();
+            cnn.Execute(
+                @"CREATE TABLE Prime ([Id] integer PRIMARY KEY NOT NULL,[Seq] integer NOT NULL,[PrimeNumber] nvarchar(1000) NOT NULL);");
         }
     }
 }

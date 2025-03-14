@@ -9,97 +9,96 @@ using System.Threading;
 using System.Threading.Tasks;
 
 // http://www.hanselman.com/blog/BackToParallelBasicsDoYouReallyWantToDoThatOrWhyDoesntTheNewParallelForSupportBigInteger.aspx
-namespace MyPrime
+namespace MyPrime;
+
+class Program
 {
-    class Program
+    static void Main(string[] args)
     {
-        static void Main(string[] args)
+        BigInteger maxFound;
+        long foundCount = 0;
+        var all = PrimeRepo.GetAll().ToList();
+
+        if (!all.Any())
         {
-            BigInteger maxFound;
-            long foundCount = 0;
-            var all = PrimeRepo.GetAll().ToList();
+            maxFound = 2;
+        }
+        else
+        {
+            var maxId = all.Max(p => p.Id);
+            var v = all.Single(p => p.Id == maxId);
+            maxFound = BigInteger.Parse(v.PrimeNumber) + 1;
+            foundCount = v.Seq;
+        }
 
-            if (!all.Any())
+        var max = BigInteger.Parse(new string('9', 9999));
+        var sw = new Stopwatch();
+        var a = new ConcurrentBag<BigInteger>();
+
+        const int gap = 1000000;
+
+        sw.Start();
+        for (var i = maxFound; i < max; i += gap)
+        {
+            var sortedList = new List<BigInteger>();
+            var last = maxFound;
+            ParallelFor(i, i + gap, j =>
             {
-                maxFound = 2;
-            }
-            else
-            {
-                var maxId = all.Max(p => p.Id);
-                var v = all.Single(p => p.Id == maxId);
-                maxFound = BigInteger.Parse(v.PrimeNumber) + 1;
-                foundCount = v.Seq;
-            }
-
-            var max = BigInteger.Parse(new string('9', 9999));
-            var sw = new Stopwatch();
-            var a = new ConcurrentBag<BigInteger>();
-
-            const int gap = 1000000;
-
-            sw.Start();
-            for (var i = maxFound; i < max; i += gap)
-            {
-                var sortedList = new List<BigInteger>();
-                var last = maxFound;
-                ParallelFor(i, i + gap, j =>
+                if (j.IsProbablePrime())
                 {
-                    if (j.IsProbablePrime())
-                    {
-                        a.Add(j);
-                    }
-                });
+                    a.Add(j);
+                }
+            });
 
-                sortedList.AddRange(a);
-                sortedList.Sort();
+            sortedList.AddRange(a);
+            sortedList.Sort();
 
-                foreach (var bigInteger in sortedList)
+            foreach (var bigInteger in sortedList)
+            {
+                var p = new Prime
                 {
-                    var p = new Prime
-                    {
-                        Id = ++foundCount,
-                        Seq = foundCount,
-                        PrimeNumber = bigInteger.ToString()
-                    };
+                    Id = ++foundCount,
+                    Seq = foundCount,
+                    PrimeNumber = bigInteger.ToString()
+                };
 
-                    if (p.Seq % 10000 == 0)
-                    {
-                        PrimeRepo.Insert(p);
-                    }
-
-                    if (bigInteger - last > gap)
-                    {
-                        sw.Stop();
-                        Console.WriteLine("{0} -第{1}个- -{2}位- [{3}]", sw.Elapsed, p.Id, p.PrimeNumber.Length,
-                            p.PrimeNumber);
-                        sw.Reset();
-                        sw.Start();
-                        last = bigInteger;
-                    }
+                if (p.Seq % 10000 == 0)
+                {
+                    PrimeRepo.Insert(p);
                 }
 
-                sortedList.Clear();
-                while (!a.IsEmpty)
+                if (bigInteger - last > gap)
                 {
-                    a.TryTake(out _);
+                    sw.Stop();
+                    Console.WriteLine("{0} -第{1}个- -{2}位- [{3}]", sw.Elapsed, p.Id, p.PrimeNumber.Length,
+                        p.PrimeNumber);
+                    sw.Reset();
+                    sw.Start();
+                    last = bigInteger;
                 }
-
-                Thread.Sleep(500);
             }
 
-            Console.WriteLine(sw.Elapsed);
-            Console.WriteLine(a.Count);
-            Console.ReadLine();
+            sortedList.Clear();
+            while (!a.IsEmpty)
+            {
+                a.TryTake(out _);
+            }
+
+            Thread.Sleep(500);
         }
 
-        private static IEnumerable<BigInteger> Range(BigInteger fromInclusive, BigInteger toExclusive)
-        {
-            for (BigInteger i = fromInclusive; i < toExclusive; i++) yield return i;
-        }
+        Console.WriteLine(sw.Elapsed);
+        Console.WriteLine(a.Count);
+        Console.ReadLine();
+    }
 
-        public static void ParallelFor(BigInteger fromInclusive, BigInteger toExclusive, Action<BigInteger> body)
-        {
-            Parallel.ForEach(Range(fromInclusive, toExclusive), new ParallelOptions { MaxDegreeOfParallelism = -1 }, body);
-        }
+    private static IEnumerable<BigInteger> Range(BigInteger fromInclusive, BigInteger toExclusive)
+    {
+        for (BigInteger i = fromInclusive; i < toExclusive; i++) yield return i;
+    }
+
+    public static void ParallelFor(BigInteger fromInclusive, BigInteger toExclusive, Action<BigInteger> body)
+    {
+        Parallel.ForEach(Range(fromInclusive, toExclusive), new ParallelOptions { MaxDegreeOfParallelism = -1 }, body);
     }
 }
