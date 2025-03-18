@@ -1,22 +1,24 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-    <OutputType>Exe</OutputType>
-    <LangVersion>preview</LangVersion>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-  </PropertyGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\LibPrime\LibPrime.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="appsettings.json" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Dapper.Contrib" Version="2.0.*" />
-    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
-    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.119" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Remove="PrimeNumbers.Designer.cs" />
-  </ItemGroup>
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <OutputType>Exe</OutputType>
+        <LangVersion>preview</LangVersion>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    </PropertyGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\LibPrime\LibPrime.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="appsettings.json" />
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Dapper.Contrib" Version="2.0.*" />
+        <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+        <PackageReference Include="System.Data.SQLite.Core" Version="1.0.119" />
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Remove="PrimeNumbers.Designer.cs" />
+    </ItemGroup>
 </Project>

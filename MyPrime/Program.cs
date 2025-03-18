@@ -99,6 +99,6 @@ class Program
 
     public static void ParallelFor(BigInteger fromInclusive, BigInteger toExclusive, Action<BigInteger> body)
     {
-        Parallel.ForEach(Range(fromInclusive, toExclusive), new ParallelOptions { MaxDegreeOfParallelism = -1 }, body);
+        Parallel.ForEach(Range(fromInclusive, toExclusive), new ParallelOptions { MaxDegreeOfParallelism = 4 }, body);
     }
 }
